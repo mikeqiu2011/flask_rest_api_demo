@@ -1,71 +1,57 @@
+import uuid
+
 from flask import Flask, request
+from db import stores, items
 
 app = Flask(__name__)
-
-stores = [
-    {
-        'name': 'cosco',
-        'items': [
-            {
-                'name': 'chair',
-                'price': 15.99
-            },
-            {
-                'name': 'table',
-                'price': 29.99
-            },
-        ]
-    }
-]
 
 
 @app.get('/store')
 def get_stores():
-    return {'stores': stores}
+    return {'stores': stores.values()}
+
+
+@app.get('/item')
+def get_all_items():
+    return {'items': list(items.values())}
 
 
 @app.post('/store')
 def create_store():
-    store = request.get_json()
-    stores.append(store)
-    print(stores)
+    store_data = request.get_json()
+    store_id = uuid.uuid4().hex
+    stores[store_id] = store_data
 
-    return store, 201
+    return {store_id: store_data}, 201
 
 
-@app.post('/store/<string:name>/item')
-def add_item(name):
-    store = [store for store in stores if store['name'] == name]
-    if not store:
+@app.post('/item')
+def create_item():
+    item_data = request.get_json()
+    if item_data['store_id'] not in stores:
         return {'message': 'store does not exist'}, 404
 
-    store = store[0]
-    item = request.get_json()
-    store['items'].append(item)
+    item_id = uuid.uuid4().hex
+    item = {**item_data, "id": item_id}
+    items[item_id] = item
 
-    return store, 201
+    return item, 201
 
 
-@app.get('/store/<string:name>')
-def get_store(name):
-    store = [store for store in stores if store['name'] == name]
-    if not store:
+@app.get('/store/<string:id>')
+def get_store(id):
+    try:
+        return stores[id]
+    except KeyError:
         return {'message': 'store does not exist'}, 404
 
-    return store[0], 200
 
-
-@app.get('/store/<string:name>/item')
-def get_items_in_store(name):
-    store = [store for store in stores if store['name'] == name]
-    if not store:
-        return {'message': 'store does not exist'}, 404
-
-    store = store[0]
-    return {
-        "items": store["items"],
-        "message": "you rock!"
-    }, 200
+@app.get('/item/<string:id>')
+def get_item(id):
+    try:
+        return items[id]
+    except KeyError:
+        return {'message': 'item does not exist'}, 404
 
 
 if __name__ == '__main__':
