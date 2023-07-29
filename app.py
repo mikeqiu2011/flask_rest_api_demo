@@ -62,7 +62,10 @@ def get_items_in_store(name):
         return {'message': 'store does not exist'}, 404
 
     store = store[0]
-    return {"items": store["items"]}, 200
+    return {
+        "items": store["items"],
+        "message": "you rock!"
+    }, 200
 
 
 if __name__ == '__main__':
