@@ -65,5 +65,13 @@ def get_item(id):
         abort(404, message='item not found')
 
 
+@app.delete('/item/<string:item_id>')
+def delete_item(item_id):
+    try:
+        del items[item_id]
+    except KeyError:
+        abort(404, message='item does not exist!')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
