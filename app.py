@@ -65,6 +65,29 @@ def create_item():
     return item, 201
 
 
+@app.put('/item/<string:id>')
+def update_item(id):
+    if id not in items:
+        abort(400, message='item id not exist!')
+
+    item_data = request.get_json()
+    if (
+            'store_id' not in item_data
+            or 'name' not in item_data
+            or 'price' not in item_data
+    ):
+        abort(400,
+              message='Bad request, ensure "price", "store_id" are '
+                      'included in the json payload!')
+
+    if item_data['store_id'] not in stores:
+        abort(404, message='store not found')
+
+    items[id] |= item_data
+
+    return items[id]
+
+
 @app.delete('/item/<string:item_id>')
 def delete_item(item_id):
     try:
