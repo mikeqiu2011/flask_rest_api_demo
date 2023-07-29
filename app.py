@@ -55,5 +55,15 @@ def get_store(name):
     return store[0], 200
 
 
+@app.get('/store/<string:name>/item')
+def get_items_in_store(name):
+    store = [store for store in stores if store['name'] == name]
+    if not store:
+        return {'message': 'store does not exist'}, 404
+
+    store = store[0]
+    return {"items": store["items"]}, 200
+
+
 if __name__ == '__main__':
     app.run(debug=True)
