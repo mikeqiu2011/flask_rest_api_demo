@@ -12,6 +12,14 @@ def get_stores():
     return {'stores': list(stores.values())}
 
 
+@app.get('/store/<string:id>')
+def get_store(id):
+    try:
+        return stores[id]
+    except KeyError:
+        abort(404, message='store not found')
+
+
 @app.post('/store')
 def create_store():
     store_data = request.get_json()
@@ -22,17 +30,17 @@ def create_store():
     return store, 201
 
 
-@app.get('/store/<string:id>')
-def get_store(id):
-    try:
-        return stores[id]
-    except KeyError:
-        abort(404, message='store not found')
-
-
 @app.get('/item')
 def get_all_items():
     return {'items': list(items.values())}
+
+
+@app.get('/item/<string:id>')
+def get_item(id):
+    try:
+        return items[id]
+    except KeyError:
+        abort(404, message='item not found')
 
 
 @app.post('/item')
@@ -57,18 +65,11 @@ def create_item():
     return item, 201
 
 
-@app.get('/item/<string:id>')
-def get_item(id):
-    try:
-        return items[id]
-    except KeyError:
-        abort(404, message='item not found')
-
-
 @app.delete('/item/<string:item_id>')
 def delete_item(item_id):
     try:
         del items[item_id]
+        return {'message': 'item deleted!'}
     except KeyError:
         abort(404, message='item does not exist!')
 
