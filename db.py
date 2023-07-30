@@ -1,6 +1,7 @@
 stores = {
     "8c7119f68c764356b4fbda841cbb7974": {
-        "name": "cosco"
+        "name": "cosco",
+        "id": "8c7119f68c764356b4fbda841cbb7974"
     }
 }
 
