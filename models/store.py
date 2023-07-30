@@ -8,3 +8,6 @@ class StoreModel(db.Model):
     items = db.relationship('ItemModel',
                             back_populates='store', lazy='dynamic',
                             cascade='all, delete')
+
+    tags = db.relationship('TagModel', back_populates='store',
+                           lazy='dynamic', cascade='all, delete')
