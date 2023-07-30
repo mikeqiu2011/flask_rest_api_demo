@@ -12,26 +12,18 @@ blp = Blueprint('items', __name__, description='Operations on items')
 class Item(MethodView):
     @blp.response(200, ItemSchema)
     def get(self, item_id):
-        try:
-            return items[item_id]
-        except KeyError:
-            abort(404, message='item does not exist!')
+        item = ItemModel.query.get_or_404(item_id)
+        return item
 
     def delete(self, item_id):
-        try:
-            del items[item_id]
-        except KeyError:
-            abort(404, message='store does not exist!')
+        item = ItemModel.query.get_or_404(item_id)
+        raise NotImplementedError('Deleting an item is not implemented')
 
     @blp.arguments(ItemUpdateSchema)
     @blp.response(200, ItemSchema)
     def put(self, item_data, item_id):
-        if item_id not in items:
-            abort(400, message='item id not exist!')
-
-        items[item_id] |= item_data
-
-        return items[item_id]
+        item = ItemModel.query.get_or_404(item_id)
+        raise NotImplementedError('Updating an item is not implemented')
 
 
 @blp.route('/item')
