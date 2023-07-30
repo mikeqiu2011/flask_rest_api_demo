@@ -62,17 +62,15 @@ class Tag(MethodView):
         except SQLAlchemyError as e:
             abort(500, str(e))
 
-        return {'message': 'item deleted'}
-
-
+        return {'message': 'tag deleted'}
 
 
 @blp.route('/item/<int:item_id>/tag/<int:tag_id>')
 class LinkTagToItem(MethodView):
     @blp.response(201, TagSchema)
     def post(self, item_id, tag_id):
-        item = ItemModel.query.find_or_404(item_id)
-        tag = TagModel.query.find_or_404(tag_id)
+        item = ItemModel.query.get_or_404(item_id)
+        tag = TagModel.query.get_or_404(tag_id)
         item.tags.append(tag)
 
         try:
@@ -85,8 +83,8 @@ class LinkTagToItem(MethodView):
 
     @blp.response(200, TagAndItemSchema)
     def delete(self, item_id, tag_id):
-        item = ItemModel.query.find_or_404(item_id)
-        tag = TagModel.query.find_or_404(tag_id)
+        item = ItemModel.query.get_or_404(item_id)
+        tag = TagModel.query.get_or_404(tag_id)
         item.tags.remove(tag)
 
         try:
